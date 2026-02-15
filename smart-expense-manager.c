@@ -3,8 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#define EXP_FILE "expenses.dat"
-#define USER_FILE "user.dat"
+#define FILE_NAME "expenses.dat"
 
 struct Expense {
     int id;
@@ -15,20 +14,10 @@ struct Expense {
     char time[10];
 };
 
-struct User {
-    char username[20];
-    char password[20];
-};
-
 int expenseCount = 0;
 float monthlyBudget = 0;
 
-/* ---------- UI ---------- */
-void border() {
-    printf("========================================\n");
-}
-
-/* ---------- DATE TIME ---------- */
+// Date & Time Utility
 void getDateTime(char *date, char *timeStr) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -40,82 +29,21 @@ void getDateTime(char *date, char *timeStr) {
             tm.tm_hour, tm.tm_min, tm.tm_sec);
 }
 
-/* ---------- LOGIN ---------- */
-void registerUser() {
-    system("cls");
-    border();
-    printf(" REGISTER USER\n");
-    border();
-
-    struct User u;
-    FILE *fp = fopen(USER_FILE, "wb");
-
-    printf("Create Username: ");
-    scanf("%s", u.username);
-
-    printf("Create Password: ");
-    scanf("%s", u.password);
-
-    fwrite(&u, sizeof(u), 1, fp);
-    fclose(fp);
-
-    printf("\n✔ Registration Successful\n");
-    system("pause");
-}
-
-int login() {
-    system("cls");
-    border();
-    printf(" USER LOGIN\n");
-    border();
-
-    struct User u, temp;
-    FILE *fp = fopen(USER_FILE, "rb");
-
-    if (!fp) {
-        printf("No user found. Please register first.\n");
-        system("pause");
-        registerUser();
-        return login();
-    }
-
-    printf("Username: ");
-    scanf("%s", temp.username);
-
-    printf("Password: ");
-    scanf("%s", temp.password);
-
-    fread(&u, sizeof(u), 1, fp);
-    fclose(fp);
-
-    if (strcmp(u.username, temp.username) == 0 &&
-        strcmp(u.password, temp.password) == 0) {
-        printf("\n✔ Login Successful\n");
-        system("pause");
-        return 1;
-    } else {
-        printf("\n❌ Invalid Credentials\n");
-        system("pause");
-        return 0;
-    }
-}
-
-/* ---------- EXPENSE ---------- */
+// Add Expense
 void addExpense() {
     system("cls");
-    border();
-    printf(" ADD EXPENSE\n");
-    border();
 
     struct Expense e;
-    FILE *fp = fopen(EXP_FILE, "ab");
+    FILE *fp = fopen(FILE_NAME, "ab");
 
     e.id = ++expenseCount;
+
+    printf("=== ADD NEW EXPENSE ===\n\n");
 
     printf("Amount: ");
     scanf("%f", &e.amount);
 
-    printf("Category: ");
+    printf("Category (food/travel/rent/medical/other): ");
     scanf("%s", e.category);
 
     printf("Note: ");
@@ -126,112 +54,126 @@ void addExpense() {
     fwrite(&e, sizeof(e), 1, fp);
     fclose(fp);
 
-    printf("\n✔ Expense Added\n");
+    printf("\n✔ Expense Added Successfully\n");
     system("pause");
 }
 
+// View Expenses
 void viewExpenses() {
     system("cls");
-    border();
-    printf(" EXPENSE HISTORY\n");
-    border();
 
     struct Expense e;
-    FILE *fp = fopen(EXP_FILE, "rb");
+    FILE *fp = fopen(FILE_NAME, "rb");
+
     float total = 0;
 
+    printf("=== EXPENSE HISTORY ===\n\n");
+
     if (!fp) {
-        printf("No data found.\n");
+        printf("No expenses found.\n");
         system("pause");
         return;
     }
 
     while (fread(&e, sizeof(e), 1, fp)) {
-        printf("[%d] %.2f | %s | %s %s\n%s\n\n",
+        printf("[%d] %.2f | %s | %s %s\n    %s\n\n",
                e.id, e.amount, e.category,
                e.date, e.time, e.note);
+
         total += e.amount;
     }
 
     fclose(fp);
 
     printf("Total Spent: %.2f\n", total);
-    if (monthlyBudget > 0)
-        printf("Budget Used: %.2f%%\n", (total / monthlyBudget) * 100);
+
+    if (monthlyBudget > 0) {
+        printf("Budget Used: %.2f%%\n",
+               (total / monthlyBudget) * 100);
+    }
 
     system("pause");
 }
 
+// Set Budget
 void setBudget() {
     system("cls");
-    border();
-    printf(" SET BUDGET\n");
-    border();
 
-    printf("Enter Monthly Budget: ");
+    printf("=== SET MONTHLY BUDGET ===\n\n");
+    printf("Enter Budget Amount: ");
     scanf("%f", &monthlyBudget);
 
-    printf("\n✔ Budget Saved\n");
+    printf("\n✔ Budget Updated Successfully\n");
     system("pause");
 }
 
-void analytics() {
+// Category Analytics
+void categoryAnalytics() {
     system("cls");
-    border();
-    printf(" CATEGORY ANALYTICS\n");
-    border();
 
     struct Expense e;
-    FILE *fp = fopen(EXP_FILE, "rb");
+    FILE *fp = fopen(FILE_NAME, "rb");
 
-    float total = 0;
+    float food = 0, travel = 0, rent = 0, medical = 0, other = 0;
 
     if (!fp) {
-        printf("No data.\n");
+        printf("No data available.\n");
         system("pause");
         return;
     }
 
-    while (fread(&e, sizeof(e), 1, fp))
-        total += e.amount;
+    while (fread(&e, sizeof(e), 1, fp)) {
+        if (strcmp(e.category, "food") == 0)
+            food += e.amount;
+        else if (strcmp(e.category, "travel") == 0)
+            travel += e.amount;
+        else if (strcmp(e.category, "rent") == 0)
+            rent += e.amount;
+        else if (strcmp(e.category, "medical") == 0)
+            medical += e.amount;
+        else
+            other += e.amount;
+    }
 
     fclose(fp);
 
-    printf("Total Expenses: %.2f\n", total);
+    printf("=== CATEGORY ANALYTICS ===\n\n");
+    printf("Food    : %.2f\n", food);
+    printf("Travel  : %.2f\n", travel);
+    printf("Rent    : %.2f\n", rent);
+    printf("Medical : %.2f\n", medical);
+    printf("Other   : %.2f\n", other);
+
     system("pause");
 }
 
-/* ---------- MAIN ---------- */
+// Main Menu
 int main() {
     int choice;
 
-    if (!login())
-        return 0;
-
     do {
         system("cls");
-        border();
-        printf(" SMART EXPENSE MANAGER\n");
-        border();
+
+        printf("==== SMART EXPENSE MANAGER ====\n\n");
         printf("1. Add Expense\n");
         printf("2. View Expenses\n");
-        printf("3. Set Budget\n");
-        printf("4. Analytics\n");
-        printf("0. Exit\n");
-        border();
-        printf("Choice: ");
+        printf("3. Set Monthly Budget\n");
+        printf("4. Category Analytics\n");
+        printf("0. Exit\n\n");
+        printf("Enter Choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1: addExpense(); break;
             case 2: viewExpenses(); break;
             case 3: setBudget(); break;
-            case 4: analytics(); break;
+            case 4: categoryAnalytics(); break;
         }
 
     } while (choice != 0);
 
     system("cls");
-    printf("Logged out successfully 👋\n");
+    printf("Thank you for using Expense Manager 💸\n");
+
     return 0;
 }
