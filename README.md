@@ -6,11 +6,10 @@
 
 Smart Expense Manager is a console-based application written in **C language** that allows users to:
 
-- Register & Login
-- Add expenses
-- View expense history
-- Set monthly budget
-- View basic analytics
+- Add expenses  
+- View expense history  
+- Set monthly budget  
+- View category-wise analytics  
 
 The project uses **binary file handling** for persistent data storage.
 
@@ -18,114 +17,52 @@ The project uses **binary file handling** for persistent data storage.
 
 ## 🛠 Technologies Used
 
-- C Programming
-- File Handling (Binary Files)
-- Structures
-- Time Library
-- Standard I/O
+- C Programming  
+- File Handling (Binary Files)  
+- Structures (`struct`)  
+- Standard Libraries (`stdio.h`, `stdlib.h`, `string.h`, `time.h`)  
 
 ---
 
-## 📂 Project Structure
+## ⚙ Features
 
-```
-smart-expense-manager/
-│
-├── src/
-│   └── main.c
-│
-├── data/
-│   ├── expenses.dat
-│   └── user.dat
-│
-├── .gitignore
-└── README.md
-```
+- Automatic Date & Time Tracking  
+- Unique Expense ID Generation  
+- Budget Usage Percentage Calculation  
+- Category-based Spending Analysis  
+- Simple & User-Friendly Console Interface  
 
 ---
 
-## 🚀 Features
+## 📂 File Storage
 
-✔ User Registration & Login  
-✔ Add Expenses with Date & Time  
-✔ View Expense History  
-✔ Monthly Budget Setting  
-✔ Basic Expense Analytics  
-✔ Binary File Storage  
+- Data is stored in: `expenses.dat`  
+- Mode used:
+  - `ab` → Append Binary  
+  - `rb` → Read Binary  
 
 ---
 
-## 🧠 Concepts Used
+## 🚀 How to Run
 
-- Structures
-- File Handling (fopen, fread, fwrite)
-- Date & Time handling
-- Modular Programming
-- Menu-driven Console UI
-
----
-
-## ▶ How to Run
-
-### 🔹 Using GCC
-
-```
-gcc src/main.c -o expense
-./expense
-```
-
-### 🔹 Using CodeBlocks / Dev-C++
-
-1. Open main.c
-2. Compile
-3. Run
+1. Compile the program:
+   ```
+   gcc expense_manager.c -o expense
+   ```
+2. Run the executable:
+   ```
+   ./expense
+   ```
 
 ---
 
-## 📊 Sample Output
+## 🎯 Learning Outcomes
 
-```
-========================================
- SMART EXPENSE MANAGER
-========================================
-1. Add Expense
-2. View Expenses
-3. Set Budget
-4. Analytics
-0. Exit
-========================================
-Choice:
-```
+- Practical implementation of structures  
+- Binary file handling in C  
+- Menu-driven program design  
+- Real-world financial tracking logic  
 
 ---
 
-## 🔐 Data Storage
-
-- `user.dat` → Stores login credentials
-- `expenses.dat` → Stores all expense records
-
-Both are stored in **binary format**.
-
----
-
-## 🎯 Future Improvements
-
-- Category-wise analytics
-- Monthly report generation
-- Delete/Edit expense feature
-- Password encryption
-- GUI version
-- Cloud sync version
-
----
-
-## 👨‍💻 Author
-
-**Your Name**
-Computer Engineering Student
-
----
-
-## ⭐ If you like this project
-
-Give it a star ⭐ on GitHub!
+💸 Thank you for checking out this project!
